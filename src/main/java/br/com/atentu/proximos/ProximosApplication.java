@@ -49,6 +49,18 @@ public class ProximosApplication {
 			segmentRepository.save(parent);
 			segmentRepository.save(new Segment("Hall", parent));
 			
+			Segment parent2 = new Segment("Condominio A2");
+			
+			segmentRepository.save(parent2);
+			Segment portaria = new Segment("Portaria", parent2);
+			segmentRepository.save(portaria);
+			segmentRepository.save(new Segment("Hall", parent2));
+			
+			segmentRepository.save(new Segment("Entrada 1", portaria));
+			segmentRepository.save(new Segment("Entrada 2", portaria));
+			
+			log.info("OK");
+			
 			
 		};
 	}
