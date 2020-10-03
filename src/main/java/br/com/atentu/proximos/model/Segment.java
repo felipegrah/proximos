@@ -11,13 +11,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+import lombok.EqualsAndHashCode;
 
 @Entity
+@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Segment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@EqualsAndHashCode.Include
 	private Long id;
 	
 	private String name;
@@ -25,34 +36,22 @@ public class Segment {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Segment parent;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "parent")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private  Set<Segment> children;
 	
-	public Segment() {}
-
-	public Segment(String name, Segment parent, Set<Segment> children) {
-		this.name = name;
-		this.parent = parent;
-		this.children = children;
-	}
+	public Segment() {};
 	
-	public Segment(Long id, String name, Segment parent, Set<Segment> children) {
-		this.id = id;
-		this.name = name;
-		this.parent = parent;
-		this.children = children;
-	}
-
 	public Segment(String name) {
 		this.name = name;
 	}
 	
-	public Segment(String name, Segment parent) {
+	public Segment(String name, Segment segment) {
 		this.name = name;
-		this.parent = parent;
+		this.parent = segment;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,7 +80,8 @@ public class Segment {
 	public Set<Segment> getChildren() {
 		return children;
 	}
-
+	
+	
 	public void setChildren(Set<Segment> children) {
 		this.children = children;
 	};
